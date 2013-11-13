@@ -25,6 +25,7 @@ base_url = '<?= base_url();?>';
   </div>
 
   <div id="main">
+  
   <?php $this->load->view($main);?>
   </div>
   

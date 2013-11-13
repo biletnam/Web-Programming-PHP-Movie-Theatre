@@ -1,4 +1,4 @@
 
-<h1>UofT Cinema</h1>
+<h1>Theatre</h1>
 
 
