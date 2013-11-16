@@ -1,9 +1,6 @@
 <?php
 
-
-
 class Main extends CI_Controller {
-
     
     function __construct() {
     	// Call the Controller constructor
@@ -11,26 +8,28 @@ class Main extends CI_Controller {
     }
         
     function index() {
-	    	$data['main']='main/index';
-
+			$data['main']='main/index';
 	    	//load the dates model
-	    	$this->load->model('dates_model');
+	    	$this->load->model('cinemadata_model');
 	    	
 	    	
 	    	//grab all the dates available
-	    	$dates = $this->dates_model->get_dates();
-	    	$dropcontent=array();
+	    	$dates = $this->cinemadata_model->get_dates();
+	    	
+	    	$dropcontent[]='Please Select a Date';
 	    	if ($dates->num_rows() > 0){
 	    		foreach ($dates->result() as $row){
 	    			$dropcontent[]=$row->date;
 	    		}
 	    	}
-	    	$data['dates']=$dropcontent;
+	    	$GLOBALS['alldates']=$dropcontent;
+	    	$data['dates']=array_fill_keys ( $dropcontent ,'' );
+	    	foreach ($dropcontent as $e){
+	    		$data['dates'][$e]=$e;
+	    	}
 	    	$this->load->view('template', $data);
 	    	}
-    }
     
-    function datemenu() {
 
 	function showShowtimes()
     {
@@ -93,5 +92,10 @@ class Main extends CI_Controller {
     }
 
     
+    function getVenue() {
+    	echo $this->input->post('dateDrop');
+    }
+    function getMovies() {
+    	
+    }
 }
-

@@ -1,12 +1,12 @@
+<form method="post" action="main/getVenue">
 <?php
 
- /*echo anchor('main/showShowtimes','Show Showtimes') . "<br />";
- echo anchor('main/populate','Populate Database') . "<br />";
- echo anchor('main/delete','Delete Databse') . "<br />";  
- 
-*/
- //echo anchor('','Buy Tickets') . "<br />";
+echo 'Select a date: ';
 echo form_dropdown('dateDrop', $dates, '-1');
+echo form_submit('submitdate','Submit');
+
+//echo anchor('main/delete','  Choose theatre and movie.') . "<br />";
 ?>
+
 
 
