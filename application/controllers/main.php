@@ -11,8 +11,6 @@ class Main extends CI_Controller {
 			$data['main']='main/index';
 	    	//load the dates model
 	    	$this->load->model('cinemadata_model');
-	    	
-	    	
 	    	//grab all the dates available
 	    	$dates = $this->cinemadata_model->get_dates();
 	    	
@@ -22,7 +20,6 @@ class Main extends CI_Controller {
 	    			$dropcontent[]=$row->date;
 	    		}
 	    	}
-	    	$GLOBALS['alldates']=$dropcontent;
 	    	$data['dates']=array_fill_keys ( $dropcontent ,'' );
 	    	foreach ($dropcontent as $e){
 	    		$data['dates'][$e]=$e;
@@ -93,9 +90,80 @@ class Main extends CI_Controller {
 
     
     function getVenue() {
-    	echo $this->input->post('dateDrop');
+    	$this->load->model('cinemadata_model');
+    	$venues =$this->cinemadata_model->get_venues($this->input->post('dateDrop'));
+    	$dropcontent[]='Please Select a Venue:';
+    	if ($venues->num_rows() > 0){
+    		foreach ($venues->result() as $row){
+    			$dropcontent[]=$row->name;
+    		}
+    	}
+    	$data['venues']=array_fill_keys ( $dropcontent ,'' );
+    	foreach ($dropcontent as $e){
+    		$data['venues'][$e]=$e;
+    	}
+    	$this->getMovies($data, $this->input->post('dateDrop'));
     }
-    function getMovies() {
+    
+    function getMovies($data, $date) {
+    	$this->load->model('cinemadata_model');
+    	$movies=$this->cinemadata_model->get_movies($date);
+    	$dropcontent[]='Please Select a Movie:';
+    	if ($movies->num_rows() > 0){
+    		foreach ($movies->result() as $row){
+    			$dropcontent[]=$row->title;
+    		}
+    	}
+    	$data['movies']=array_fill_keys ( $dropcontent ,'' );
+    	foreach ($dropcontent as $e){
+    		$data['movies'][$e]=$e;
+    	}
     	
+    	//Now we are prepared to call the view, passing all the necessary variables inside the $data array
+    	$data['main']='main/venuesandmovies';
+    	$this->load->view('template', $data);
+    }
+    
+    function getShowtimes() {
+    	$this->load->library('table');
+    	$this->load->model('cinemadata_model');
+    	$venues =$this->input->post('venueDrop');
+//     	echo '<script language="javascript">';
+//     	echo 'alert("'. $venues.'")';
+//     	echo '</script>';
+    	if ($venues!='') {
+    		$queryString='select m.title, t.name, t.address, s.date, s.time, s.available
+								from movie m, theater t, showtime s
+								where m.id = s.movie_id and t.id=s.theater_id and t.name=\''. $venues. '\'';
+    		$showtimes=$this->cinemadata_model->get_showtimes($queryString);
+    	}
+    	else {
+    		$movies =$this->input->post('movieDrop');
+
+    		$queryString='select m.title, t.name, t.address, s.date, s.time, s.available
+								from movie m, theater t, showtime s
+								where m.id = s.movie_id and t.id=s.theater_id and m.title=\''. $movies. '\'';
+    		$showtimes=$this->cinemadata_model->get_showtimes($queryString);
+    	} 	
+    	
+    	//If it returns some results we continue
+    	if ($showtimes->num_rows() > 0){
+    	
+    		//Prepare the array that will contain the data
+    		$table = array();
+    	
+    		$table[] = array('Movie','Theater','Address','Date','Time','Available');
+    	
+    		foreach ($showtimes->result() as $row){
+    			$table[] = array($row->title,$row->name,$row->address,$row->date,$row->time,$row->available);
+    		}
+    		//Next step is to place our created array into a new array variable, one that we are sending to the view.
+    		$data['showtimes'] = $table;
+    	}
+    	
+    	//Now we are prepared to call the view, passing all the necessary variables inside the $data array
+    	$data['main']='main/showtimes';
+    	$this->load->view('template', $data);
+    		
     }
 }
