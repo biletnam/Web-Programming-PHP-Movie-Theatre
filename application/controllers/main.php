@@ -1,7 +1,7 @@
 <?php
 
 class Main extends CI_Controller {
-    
+	public $title,$theatre,$date,$time;
     function __construct() {
     	// Call the Controller constructor
     	parent::__construct();
@@ -173,23 +173,58 @@ class Main extends CI_Controller {
     	echo $title . $theatre . $date . $time;
     
     }
-    function buyTickets() {
+    function buyform() {
     	$this->load->helper(array('form', 'url'));
-    	
-    	$this->load->library('validation');
-    		
+    
+    	$this->load->library('form_validation');
+    
     	$rules['ccnum']	= "required";
     	$rules['ccexp']	= "required";
+    	$this->form_validation->set_rules('ccnum', 'Credit Card Number', 'required|numeric|min_length[16]|max_length[16]');
+    
+    	$this->form_validation->set_rules('ccexp', 'Credit Card Expiry Date', 'callback_expiryCheck');
     	
-    	$this->validation->set_rules($rules);
-    		
-    	if ($this->validation->run() == FALSE)
+    	if ($this->form_validation->run() == FALSE)
     	{
-    		$this->load->view('myform');
+    			$data['main']='main/buytickets';
+    			$data['errors'] = validation_errors();
+    			$this->load->view('template', $data);
+ 
     	}
     	else
     	{
-    		$this->load->view('formsuccess');
+    		$this->load->library('table');
+    		$data['ticket'] = $this->ticketFormat('','','','','');
+    		$data['main']='main/ccsuccess';
+    		$this->load->view('template', $data);
     	}
     }
+    function expiryCheck($str)
+    {
+    	$date=explode("/",$str);
+    	if (preg_match('/^\d{1,2}\/\d{2}$/', $str)==FALSE) {
+    		$this->form_validation->set_message('expiryCheck', 'Expiry Date must be in MM/YY format');
+    		return FALSE;
+    	}
+    	else if (checkdate(intval($date[0]), 1, intval("20" . $date[1]))==FALSE ) {
+    		$this->form_validation->set_message('expiryCheck', 'Expiry Date must be comprised of valid dates only');
+    		return FALSE;
+    	}
+    	
+    	else 
+    	{
+    		return TRUE;
+    	}
+    }
+    function ticketFormat($title,$theatre,$date,$time,$seat) {
+    	//Prepare the array that will contain the data
+    	$table = array();
+    	 
+    	$table[] = array('Movie','Theater','Date','Time', 'seatNumber');
+
+    	//$table[] = array($this->$title,$theatre,$date,$time);
+    	$table[] = array('testTitle','testTheatre','testDate','testTime','-1');
+    	return $table;
+    }
+    
 }
