@@ -26,8 +26,7 @@ class cinemadata_model extends CI_Model {
 	{
 		$query = $this->db->query($queryString);
 		return $query;
-	}
-	
+	}	
 
 }
 ?>

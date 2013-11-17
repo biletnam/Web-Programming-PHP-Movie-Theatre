@@ -152,10 +152,12 @@ class Main extends CI_Controller {
     		//Prepare the array that will contain the data
     		$table = array();
     	
-    		$table[] = array('Movie','Theater','Address','Date','Time','Available');
+    		$table[] = array('Movie','Theater','Date','Time','Available','Find Seat');
     	
     		foreach ($showtimes->result() as $row){
-    			$table[] = array($row->title,$row->name,$row->address,$row->date,$row->time,$row->available);
+    			$table[] = array($row->title,$row->name,$row->date,$row->time,$row->available,anchor(
+    					'main/process_Seats/' .$row->title . '/'. $row->name . '/' .$row->date . '/'.$row->time,'Select Seats'));
+    			
     		}
     		//Next step is to place our created array into a new array variable, one that we are sending to the view.
     		$data['showtimes'] = $table;
@@ -165,5 +167,29 @@ class Main extends CI_Controller {
     	$data['main']='main/showtimes';
     	$this->load->view('template', $data);
     		
+    }
+    
+    function process_Seats ($title,$theatre,$date,$time) {
+    	echo $title . $theatre . $date . $time;
+    
+    }
+    function buyTickets() {
+    	$this->load->helper(array('form', 'url'));
+    	
+    	$this->load->library('validation');
+    		
+    	$rules['ccnum']	= "required";
+    	$rules['ccexp']	= "required";
+    	
+    	$this->validation->set_rules($rules);
+    		
+    	if ($this->validation->run() == FALSE)
+    	{
+    		$this->load->view('myform');
+    	}
+    	else
+    	{
+    		$this->load->view('formsuccess');
+    	}
     }
 }
