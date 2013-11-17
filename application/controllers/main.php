@@ -170,9 +170,15 @@ class Main extends CI_Controller {
     }
     
     function process_Seats ($title,$theatre,$date,$time) {
-    	echo $title . $theatre . $date . $time;
+    	$data['main']='main/seat_selection';
+    	$data['title'] = $title;
+    	$data['theatre'] = $theatre;
+    	$data['date'] = $date;
+    	$data['time'] = $time;
+    	$this->load->view('template', $data);
     
     }
+
     function buyTickets() {
     	$this->load->helper(array('form', 'url'));
     	
