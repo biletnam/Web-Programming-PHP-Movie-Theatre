@@ -27,6 +27,21 @@ class cinemadata_model extends CI_Model {
 		$query = $this->db->query($queryString);
 		return $query;
 	}	
-
+	function newticket($ticketinfo) 
+	{
+		$this->db->query('insert into ticket (first,last,creditcardnumber,creditcardexpiration,showtime_id,seat) values (\''. $ticketinfo[0]. '\',\'' .  $ticketinfo[1] . '\',\'' .  $ticketinfo[2] . '\',\'' .  $ticketinfo[3] . '\',' .  $ticketinfo[4] . ',' .  $ticketinfo[5]. ')');
+	}
+	function get_showtimeID($queryString) {
+		$query = $this->db->query($queryString);
+		return $query;
+	}
+	function get_tickets () {
+		$query = $this->db->query('select *
+								from  ticket');
+		return $query;
+	}
+	function delete_tickets() {
+		$this->db->query("delete from ticket");
+	}
 }
 ?>
