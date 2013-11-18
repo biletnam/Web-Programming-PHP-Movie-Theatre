@@ -1,7 +1,7 @@
 <?php
 
 class Main extends CI_Controller {
-	public $title,$theatre,$date,$time;
+	public $title,$theatre,$date,$time,$seatNo;
 	public $id;
     function __construct() {
     	// Call the Controller constructor
@@ -109,9 +109,7 @@ class Main extends CI_Controller {
     
     function process_Seats ($title,$theatre,$date,$time) {
     	
-    	$this->load->model('cinemadata_model');
-    	echo rawurldecode ($title) . rawurldecode ($theatre) . rawurldecode ($date) . rawurldecode ($time);
-    	
+    	$this->load->model('cinemadata_model');   	
     	$title=rawurldecode ($title);
     	$theatre=rawurldecode ($theatre);
     	$date=rawurldecode ($date);
@@ -122,8 +120,29 @@ class Main extends CI_Controller {
     				and  m.title=\''. $title. '\' and t.name=\''. $theatre. '\' and s.date=\''. $date. '\' and s.time=\''. $time. '\'';
     	$showtimes=$this->cinemadata_model->get_showtimeID($queryString);
     	$id=$showtimes->row()->id;
-    	echo ($id);
     	$this->id=$id;
+    	
+    	$data['main']='main/seat_selection';
+
+    	$seats = array();
+    	$seats[] = 1;
+    	$seats[] = 2;
+    	
+    	$seatString='';
+    	foreach ($seats as $i){
+    		$seatString=$seatString . $i;
+    	}
+    	$this->$title=$title;
+    	$this->$theatre=$theatre;
+    	$this->$date=$date;
+    	$this->$time=$time;
+    	$data['seats'] = $seatString;
+
+    	$this->load->view('template', $data);
+    }
+    
+    function storeSeat($seatNo){
+    	$this->seatNo = $seatNo;
     }
     
     function buyform() {
