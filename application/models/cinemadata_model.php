@@ -43,5 +43,9 @@ class cinemadata_model extends CI_Model {
 	function delete_tickets() {
 		$this->db->query("delete from ticket");
 	}
+	function get_reservedSeats($queryString) {
+		$query = $this->db->query($queryString);
+		return $query;
+	}
 }
 ?>

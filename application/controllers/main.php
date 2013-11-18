@@ -121,16 +121,17 @@ class Main extends CI_Controller {
     	$showtimes=$this->cinemadata_model->get_showtimeID($queryString);
     	$id=$showtimes->row()->id;
     	$this->id=$id;
+    	$queryString='select seat from ticket where ticket.showtime_id='.$id;
+    	$seats = $this->cinemadata_model->get_reservedSeats($queryString);    	
     	
     	$data['main']='main/seat_selection';
-
-    	$seats = array();
-    	$seats[] = 1;
-    	$seats[] = 2;
+//    	$seats = array();
+ //   	$seats[] = 1;
+  //  	$seats[] = 2;
     	
     	$seatString='';
-    	foreach ($seats as $i){
-    		$seatString=$seatString . $i;
+    	foreach ($seats->result() as $i){
+    		$seatString=$seatString . $i->seat;
     	}
     	$this->$title=$title;
     	$this->$theatre=$theatre;
