@@ -1,12 +1,6 @@
 <html>
 
-<head>
 
-<title>My Form</title>
-
-</head>
-
-<body>
 
 <h3>Well done!</h3>
 

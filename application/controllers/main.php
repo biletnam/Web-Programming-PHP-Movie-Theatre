@@ -120,19 +120,16 @@ class Main extends CI_Controller {
     				and  m.title=\''. $title. '\' and t.name=\''. $theatre. '\' and s.date=\''. $date. '\' and s.time=\''. $time. '\'';
     	$showtimes=$this->cinemadata_model->get_showtimeID($queryString);
     	$id=$showtimes->row()->id;
-    	$this->id=$id;
     	$queryString='select seat from ticket where ticket.showtime_id='.$id;
     	$seats = $this->cinemadata_model->get_reservedSeats($queryString);    	
     	
-    	$data['main']='main/seat_selection';
-//    	$seats = array();
- //   	$seats[] = 1;
-  //  	$seats[] = 2;
-    	
+    	$data['main']='main/seat_selection';   	
     	$seatString='';
-    	foreach ($seats as $i){
-    		$seatString=$seatString . $i;
+    	
+    	foreach ($seats->result() as $i){
+    		$seatString=$seatString . $i->seat;
     	}
+    	
     	$newdata = array(
     	'title'=>$title,
     	'theatre'=>$theatre,
@@ -148,11 +145,11 @@ class Main extends CI_Controller {
     function storeseat($seatNo){
 
     	$this->session->set_userdata('seatNo', $seatNo);
-    	echo $this->seatNo;
     	redirect('main/buyform');
     }
     
     function buyform() {
+    	
     	$this->load->helper(array('form', 'url'));
     
     	$this->load->library('form_validation');
@@ -170,13 +167,13 @@ class Main extends CI_Controller {
     	
     	if ($this->form_validation->run() == FALSE)
     	{
-    			echo $this->id;
     			$data['main']='main/buytickets';
     			$data['errors'] = validation_errors();
     			$this->load->view('template', $data);
     	}
     	else
     	{
+    
     		$this->load->library('session');
     		$session=$this->session->all_userdata();
     		$this->load->model('cinemadata_model');
@@ -184,10 +181,11 @@ class Main extends CI_Controller {
     		$this->cinemadata_model->newticket(array($this->input->post('fname'),$this->input->post('lname'),
     				$this->input->post('ccnum'),$ccexp,$session['id'],$session['seatNo'])) ;
     		$this->load->library('table');
+
     		
     		$available=$this->cinemadata_model->get_available($session['id']);
     		$pastavailable=$available->row()->available;
-    		$pastavailable-=1;
+    		$pastavailable= $pastavailable - 1;
     		$this->cinemadata_model->set_available($pastavailable,$session['id']);
     		
     		
@@ -203,6 +201,7 @@ class Main extends CI_Controller {
     
     function expiryCheck($str)
     {
+    	
     	$date=explode("/",$str);
     	if (preg_match('/^\d{1,2}\/\d{2}$/', $str)==FALSE) {
     		$this->form_validation->set_message('expiryCheck', 'Expiry Date must be in MM/YY format');
@@ -212,7 +211,14 @@ class Main extends CI_Controller {
     		$this->form_validation->set_message('expiryCheck', 'Expiry Date must be comprised of valid dates only');
     		return FALSE;
     	}
-    	
+    	else if (intval($date[1]) < substr(date('Y'),2,2) ){
+    		$this->form_validation->set_message('expiryCheck', 'Expiry Date must be greater than current year');
+    		return FALSE;
+    	}
+    	else if (intval($date[1]) == substr(date('Y'),2,2) && intval($date[0]) < date('m')){
+    		$this->form_validation->set_message('expiryCheck', 'Expiry Date must be greater than current month');
+    		return FALSE;
+    	}
     	else 
     	{
     		return TRUE;
@@ -228,7 +234,5 @@ class Main extends CI_Controller {
     	return $table;
     }
     
-    function getTicketArray() {
-    	return $this->alltickets;
-    }
+ 
 }

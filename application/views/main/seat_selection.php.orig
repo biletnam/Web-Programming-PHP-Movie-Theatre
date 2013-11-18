@@ -16,6 +16,13 @@
 	<span><img src="<?php echo base_url()?>css/images/seat_available.jpg" alt="seats" height="63" width="68" style="float:left"></span>
 	</div>
 
+	<div style="float:left; clear:both">
+	<?php 	
+		echo base_url();
+		//$js = 'id="checkout"';
+		//echo anchor('main/storeSeat', 'Go to Checkout', $js);
+	?>
+	</div>
 	<script>
 	
 	var lastIndex  = -1;
@@ -48,12 +55,20 @@
 					$(".seatholder span img:eq(" + lastIndex +")").attr("src", "<?php echo base_url()?>css/images/seat_available.jpg");
 				}
 				$(this).attr("src", "<?php echo base_url()?>css/images/current_selected.jpg");
-				lastIndex = seatNo;
+				lastIndex = seatNo + 1;
 				
-				document.getElementById("checkout").setAttribute('href',"<?php echo base_url()?>main/storeSeat/" + (lastIndex +1));
+<<<<<<< HEAD
+				document.getElementById("checkout").setAttribute('href',"<?php echo base_url();?>main/storeSeat/" + lastIndex);
 			}
 	});
 	</script>
-		<a id="checkout">Checkout</a>
+		<a href="<?php echo base_url();?>main/storeSeat" id="checkout">Checkout</a>
+=======
+				document.getElementById("checkout").setAttribute('href',"<?php echo base_url()?>main/storeSeat/" + lastIndex);
+			}
+	});
+	</script>
+		<a href="<?php echo base_url()?>main/storeSeat" id="checkout">Checkout</a>
+>>>>>>> 013457a926424fa75e171b040013c82d8c14b277
 </body>
 </html>
