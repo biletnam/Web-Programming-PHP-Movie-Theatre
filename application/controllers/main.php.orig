@@ -1,9 +1,7 @@
 <?php
 
 class Main extends CI_Controller {
-	public $title,$theatre,$date,$time,$seatNo;
-	public $all_showtimes = array();
-	
+	public $title,$theatre,$date,$time;
     function __construct() {
     	// Call the Controller constructor
     	parent::__construct();
@@ -177,40 +175,15 @@ class Main extends CI_Controller {
     	$data['theatre'] = $theatre;
     	$data['date'] = $date;
     	$data['time'] = $time;
-    	$key = ''.$this->title.$this->theatre.$this->date.$this->time;
-    	
-    	if (array_key_exists($key, $this->all_showtimes)) {
-				$seats = $this->all_showtimes[$key]; 			
-    	}
-    	else{
-    		$seats = array();
-    		$seats[] = 1;
-    		$seats[] = 2;
-    	}
-    	$seatString='';
-    	foreach ($seats as $i){ 
-    		$seatString=$seatString . $i;
-    	}
-    	$this->$title=$title;
-    	$this->$theatre=$theatre;
-    	$this->$date=$date;
-    	$this->$time=$time;
-		$data['seats'] = $seatString;
-    	$data['title'] = $title;
-    	$data['theatre'] = $theatre;
-    	$data['date'] = $date;
-    	$data['time'] = $time;
     	$this->load->view('template', $data);
-    	
-    }
     
-    function storeSeat($seatNo){
-    	//check if all_showtimes[$key] exists or not? if it does, go to that index and append the seatNo. else create that index and append the seatno 
-    	//if ()
-    	$this->seatNo = $seatNo;
     }
-    
+<<<<<<< HEAD
+
+    function buyTickets() {
+=======
     function buyform() {
+>>>>>>> 0d876913adcf13e2d1fa7a7f30b6456a24dd086b
     	$this->load->helper(array('form', 'url'));
     
     	$this->load->library('form_validation');
@@ -262,5 +235,6 @@ class Main extends CI_Controller {
     	//$table[] = array($this->$title,$theatre,$date,$time);
     	$table[] = array('testTitle','testTheatre','testDate','testTime','-1');
     	return $table;
-    }    
+    }
+    
 }

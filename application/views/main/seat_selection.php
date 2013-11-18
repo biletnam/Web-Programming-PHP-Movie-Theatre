@@ -17,19 +17,24 @@
 	</div>
 
 	<div style="float:left; clear:both">
-	<?php echo anchor('','Go to Checkout')?>
+	<?php 	
+		//$js = 'id="checkout"';
+		//echo anchor('main/storeSeat', 'Go to Checkout', $js);
+	?>
 	</div>
-
 	<script>
+	
 	var lastIndex  = -1;
-	var seatsReserved = [];
+	var seatString="<?php echo $seats?>";	
+	var destination="main/storeseat/";
+	var reservedSeats = [];	
 
-
+	for (var i = 0; i <seatString.length ; i++){
+		reservedSeats.push(seatString.charAt(i));
+	}
 	
-	
-
 	$(document).ready(function(){
-		loadReserved(seatsReserved);
+		loadReserved(reservedSeats);
 	});
 
 	function loadReserved(seatsReserved){
@@ -49,16 +54,12 @@
 					$(".seatholder span img:eq(" + lastIndex +")").attr("src", "<?php echo base_url()?>css/images/seat_available.jpg");
 				}
 				$(this).attr("src", "<?php echo base_url()?>css/images/current_selected.jpg");
-				lastIndex = seatNo;
+				lastIndex = seatNo + 1;
+				
+				document.getElementById("checkout").setAttribute('href',"/phptheatre/index.php/main/storeSeat/" + lastIndex);
 			}
 	});
-
-
-
-	
-	
-	
 	</script>
-		
+		<a href="/phptheatre/index.php/main/storeSeat" id="checkout">Checkout</a>
 </body>
 </html>
