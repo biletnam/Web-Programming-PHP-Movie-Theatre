@@ -44,10 +44,10 @@ class admin extends CI_Controller {
 		if ($tickets->num_rows() > 0){
 			//Prepare the array that will contain the data
 			$tickettable=array();
-			$tickettable[]=array('First Name','Last Name','CC Number','CC Expiry', 'showtime_id','seatNo');
+			$tickettable[]=array('Title','Theatre', 'Seat Number','First Name','Last Name','CC Number','CC Expiry');
 			 
 			foreach ($tickets->result() as $row){
-				$tickettable[] = array($row->first,$row->last,$row->creditcardnumber,$row->creditcardexpiration,$row->showtime_id,$row->seat);
+				$tickettable[] = array($row->title,$row->name,$row->seat,$row->first,$row->last,$row->creditcardnumber,$row->creditcardexpiration);
 			}
 		}
 		if (isset($tickettable)) {
