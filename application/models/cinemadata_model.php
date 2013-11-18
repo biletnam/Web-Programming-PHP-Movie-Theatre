@@ -43,9 +43,12 @@ class cinemadata_model extends CI_Model {
 	function delete_tickets() {
 		$this->db->query("delete from ticket");
 	}
-	function get_reservedSeats($queryString) {
-		$query = $this->db->query($queryString);
-		return $query;
+	function get_available($showtime_id) {
+		$this->db->query("select available from showtime where id=". $showtime_id);
+	}
+	
+	function set_available ($pastSeats,$showtime_id) {
+		$this->db->query("update showtime set available = $pastSeats where id=". $showtime_id);
 	}
 }
 ?>

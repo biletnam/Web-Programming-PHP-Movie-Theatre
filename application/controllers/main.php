@@ -1,12 +1,12 @@
 <?php
 
 class Main extends CI_Controller {
-	public $title,$theatre,$date,$time,$seatNo;
+	public $title,$theatre,$date,$time;
 	public $id;
+	public $seatNo;
     function __construct() {
     	// Call the Controller constructor
     	parent::__construct();
-    	$this->session->set_userdata('tickets', array());
     	
     }
         
@@ -108,7 +108,7 @@ class Main extends CI_Controller {
     }
     
     function process_Seats ($title,$theatre,$date,$time) {
-    	
+    	$this->load->library('session');
     	$this->load->model('cinemadata_model');   	
     	$title=rawurldecode ($title);
     	$theatre=rawurldecode ($theatre);
@@ -130,20 +130,26 @@ class Main extends CI_Controller {
   //  	$seats[] = 2;
     	
     	$seatString='';
-    	foreach ($seats->result() as $i){
-    		$seatString=$seatString . $i->seat;
+    	foreach ($seats as $i){
+    		$seatString=$seatString . $i;
     	}
-    	$this->$title=$title;
-    	$this->$theatre=$theatre;
-    	$this->$date=$date;
-    	$this->$time=$time;
+    	$newdata = array(
+    	'title'=>$title,
+    	'theatre'=>$theatre,
+    	'date'=>$date,
+    	'time'=>$time,
+    	'id'=>$id
+    			);
+    	$this->session->set_userdata($newdata);
     	$data['seats'] = $seatString;
-
     	$this->load->view('template', $data);
     }
     
-    function storeSeat($seatNo){
-    	$this->seatNo = $seatNo;
+    function storeseat($seatNo){
+
+    	$this->session->set_userdata('seatNo', $seatNo);
+    	echo $this->seatNo;
+    	redirect('main/buyform');
     }
     
     function buyform() {
@@ -164,20 +170,34 @@ class Main extends CI_Controller {
     	
     	if ($this->form_validation->run() == FALSE)
     	{
+    			echo $this->id;
     			$data['main']='main/buytickets';
     			$data['errors'] = validation_errors();
     			$this->load->view('template', $data);
     	}
     	else
     	{
+    		$this->load->library('session');
+    		$session=$this->session->all_userdata();
     		$this->load->model('cinemadata_model');
     		$ccexp = str_replace('/', '', $this->input->post('ccexp'));
     		$this->cinemadata_model->newticket(array($this->input->post('fname'),$this->input->post('lname'),
-    				$this->input->post('ccnum'),$ccexp,27879,'-1')) ;
+    				$this->input->post('ccnum'),$ccexp,$session['id'],$session['seatNo'])) ;
     		$this->load->library('table');
-    		$data['ticket'] = $this->ticketFormat($this->input->post('fname'),$this->input->post('lname'),'','','','','');
+    		
+    		$available=$this->cinemadata_model->get_available($session['id']);
+    		$pastavailable=$available->row()->available;
+    		$pastavailable-=1;
+    		$this->cinemadata_model->set_available($pastavailable,$session['id']);
+    		
+    		
+    		$data['ticket'] = $this->ticketFormat($this->input->post('fname'),$this->input->post('lname'),
+    				$session['title'],$session['theatre'],$session['date'],$session['time'],$session['seatNo']);
     		$data['main']='main/ccsuccess';
     		$this->load->view('template', $data);
+    		
+    		
+    		
     	}
     }
     
@@ -204,8 +224,7 @@ class Main extends CI_Controller {
     	 
     	$table[] = array('First Name','Last Name','Movie','Theater','Date','Time', 'seatNumber');
 
-    	//$table[] = array($this->$title,$theatre,$date,$time);
-    	$table[] = array($fname,$lname,'testTitle','testTheatre','testDate','testTime','-1');
+    	$table[] = array($fname,$lname,$title,$theatre,$date,$time,$seat);
     	return $table;
     }
     

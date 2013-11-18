@@ -18,7 +18,6 @@
 
 	<div style="float:left; clear:both">
 	<?php 	
-		echo base_url();
 		//$js = 'id="checkout"';
 		//echo anchor('main/storeSeat', 'Go to Checkout', $js);
 	?>
@@ -57,10 +56,10 @@
 				$(this).attr("src", "<?php echo base_url()?>css/images/current_selected.jpg");
 				lastIndex = seatNo + 1;
 				
-				document.getElementById("checkout").setAttribute('href',"<?php echo base_url();?>main/storeSeat/" + lastIndex);
+				document.getElementById("checkout").setAttribute('href',"<?php echo base_url()?>main/storeSeat/" + lastIndex);
 			}
 	});
 	</script>
-		<a href="<?php echo base_url();?>main/storeSeat" id="checkout">Checkout</a>
+		<a href="<?php echo base_url()?>main/storeSeat" id="checkout">Checkout</a>
 </body>
 </html>
