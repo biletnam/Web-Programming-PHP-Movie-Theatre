@@ -1,4 +1,4 @@
-# Web-Progrmaming-PHP-Movie-Theatre
+# Web-Programming-PHP-Movie-Theatre
 
 This is a project that was made in the Fall of 2013 for CSC309 (Web Programming).
 
